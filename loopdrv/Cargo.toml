@@ -1,0 +1,20 @@
+[package]
+name = "uefi-loopdrv"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = "0.4.20"
+ptr_meta = { version = "0.2.0", default-features = false }
+uefi = { version = "0.24.0", features = ["alloc"] }
+uefi-raw = "0.3.0"
+uefi-services = { version = "0.21.0" }
+
+[features]
+qemu = ["uefi-services/qemu"]

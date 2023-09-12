@@ -1,0 +1,19 @@
+[workspace]
+members = ["lopatch", "loopdrv"]
+
+[workspace.package]
+edition = "2021"
+rust-version = "1.70"
+authors = ["Huang-Huang Bao <i@eh5.me>"]
+license = "MIT"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+
+[patch.crates-io]
+uefi = { git = "https://github.com/rust-osdev/uefi-rs.git" }
+uefi-macros = { git = "https://github.com/rust-osdev/uefi-rs.git" }
+uefi-raw = { git = "https://github.com/rust-osdev/uefi-rs.git" }
+uefi-services = { git = "https://github.com/EHfive/uefi-rs.git", branch = "uefi-toys" }

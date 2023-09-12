@@ -1,0 +1,34 @@
+[package]
+name = "uefi-lopatch"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bytemuck = { version = "1.14.0", features = ["derive"] }
+getargs = { version = "0.5.0", default-features = false }
+log = "0.4.20"
+memchr = { version = "2.6.3", default-features = false, features = ["alloc"] }
+r-efi = "4.2.0"
+regex = { version = "1.9.5", default-features = false, features = [
+    "perf-cache",
+    "perf-dfa",
+    "perf-onepass",
+    "perf-backtrack",
+    "perf-inline",
+    # "perf-literal",
+    "unicode",
+] }
+uefi = { version = "0.24.0", features = ["alloc"] }
+uefi-loopdrv = { version = "0.1.0", path = "../loopdrv" }
+uefi-raw = "0.3.0"
+uefi-services = { version = "0.21.0" }
+winsplit = { version = "0.1.0", default-features = false }
+
+[features]
+qemu = ["uefi-services/qemu"]
