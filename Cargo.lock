@@ -31,7 +31,7 @@ checksum = "965ab7eb5f8f97d2a083c799f3a1b994fc397b2fe2da5d1da1626ce15a39f2b1"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.32",
+ "syn 2.0.33",
 ]
 
 [[package]]
@@ -60,9 +60,9 @@ checksum = "8f232d6ef707e1956a43342693d2a31e72989554d58299d7a88738cc95b0d35c"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.66"
+version = "1.0.67"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "18fb31db3f9bddb2ea821cde30a9f70117e3f119938b5ee630b7403aa6e2ead9"
+checksum = "3d433d9f1a3e8c1263d9456598b16fec66f4acc9a74dacffd35c7bb09b3a1328"
 dependencies = [
  "unicode-ident",
 ]
@@ -146,9 +146,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.32"
+version = "2.0.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "239814284fd6f1a4ffe4ca893952cdd93c224b6a1571c9a9eadd670295c0c9e2"
+checksum = "9caece70c63bfba29ec2fed841a09851b14a235c60010fa4de58089b6c025668"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -213,7 +213,7 @@ source = "git+https://github.com/rust-osdev/uefi-rs.git#eb337852a56f2a5523357958
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.32",
+ "syn 2.0.33",
 ]
 
 [[package]]
@@ -227,9 +227,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "uefi-reset"
+version = "0.1.0"
+dependencies = [
+ "bitflags",
+ "getargs",
+ "log",
+ "memchr",
+ "r-efi",
+ "uefi",
+ "uefi-raw",
+ "uefi-services",
+ "uefi-shell-split",
+]
+
+[[package]]
 name = "uefi-services"
 version = "0.21.0"
-source = "git+https://github.com/EHfive/uefi-rs.git?branch=uefi-toys#24c0bc6b30d660ad20c289bc13251045af67a41a"
+source = "git+https://github.com/EHfive/uefi-rs.git?branch=uefi-toys#48ff5296cf46071804ff9fda07ad2bbe150a73df"
 dependencies = [
  "cfg-if",
  "log",
@@ -252,6 +267,6 @@ checksum = "16dfbd255defbd727b3a30e8950695d2e6d045841ee250ff0f1f7ced17917f8d"
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.11"
+version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "301abaae475aa91687eb82514b328ab47a211a533026cb25fc3e519b86adfc3c"
+checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"

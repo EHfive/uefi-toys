@@ -216,7 +216,7 @@ fn parse_args<'a, I: Iterator<Item = &'a str>>(
 
 #[entry]
 fn main(_handle: Handle, mut system_table: SystemTable<Boot>) -> Status {
-    let event = uefi_services::init(&mut system_table).unwrap();
+    uefi_services::init(&mut system_table).unwrap();
     let bt = system_table.boot_services();
 
     if system_table.uefi_revision() < MIN_UEFI_REVISION {
@@ -296,8 +296,5 @@ fn main(_handle: Handle, mut system_table: SystemTable<Boot>) -> Status {
             }
         }
     };
-    if let Some(event) = event {
-        bt.close_event(event).unwrap();
-    }
     Status::SUCCESS
 }

@@ -9,13 +9,9 @@ use uefi_services::system_table;
 
 const MIN_UEFI_REVISION: uefi::table::Revision = uefi::table::Revision::EFI_2_00;
 
-static mut EVENT: Option<uefi::Event> = None;
-
 #[entry]
 fn main(_handle: Handle, mut system_table: SystemTable<Boot>) -> Status {
-    unsafe {
-        EVENT = uefi_services::init(&mut system_table).unwrap();
-    }
+    uefi_services::init(&mut system_table).unwrap();
     let bt = system_table.boot_services();
 
     if system_table.uefi_revision() < MIN_UEFI_REVISION {
@@ -41,8 +37,5 @@ fn main(_handle: Handle, mut system_table: SystemTable<Boot>) -> Status {
 
 extern "efiapi" fn unload(_handle: Handle) -> Status {
     let bt = unsafe { system_table().as_ref().boot_services() };
-    if let Some(event) = unsafe { EVENT.take() } {
-        bt.close_event(event).unwrap();
-    }
     uefi_loopdrv::uninstall_loop_control(bt.image_handle()).status()
 }

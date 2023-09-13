@@ -1,5 +1,6 @@
 [workspace]
-members = ["lopatch", "loopdrv", "shell-split"]
+members = ["lopatch", "loopdrv", "reset", "shell-split"]
+resolver = "2"
 
 [workspace.package]
 edition = "2021"
