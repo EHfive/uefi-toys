@@ -245,12 +245,16 @@ fn main(_handle: Handle, mut system_table: SystemTable<Boot>) -> Status {
                 buf
             })
             .collect()
-    } else {
-        let load_options = image.load_options_as_cstr16().unwrap();
+    } else if let Ok(load_options) = image.load_options_as_cstr16() {
         let mut load_options_str = String::new();
         load_options_str.reserve(load_options.num_chars());
-        load_options.as_str_in_buf(&mut load_options_str).unwrap();
-        uefi_shell_split::split(load_options_str.as_str())
+        if load_options.as_str_in_buf(&mut load_options_str).is_ok() {
+            uefi_shell_split::split(load_options_str.as_str())
+        } else {
+            Vec::new()
+        }
+    } else {
+        Vec::new()
     };
     if argv.is_empty() {
         log::error!("Command-line options not passed");
