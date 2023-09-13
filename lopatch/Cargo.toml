@@ -28,7 +28,9 @@ uefi = { version = "0.24.0", features = ["alloc"] }
 uefi-loopdrv = { version = "0.1.0", path = "../loopdrv" }
 uefi-raw = "0.3.0"
 uefi-services = { version = "0.21.0" }
-winsplit = { version = "0.1.0", default-features = false }
+uefi-shell-split = { version = "0.1.0", path = "../shell-split", features = [
+    "alloc",
+] }
 
 [features]
 qemu = ["uefi-services/qemu"]

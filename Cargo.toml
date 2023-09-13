@@ -1,5 +1,5 @@
 [workspace]
-members = ["lopatch", "loopdrv"]
+members = ["lopatch", "loopdrv", "shell-split"]
 
 [workspace.package]
 edition = "2021"
@@ -7,10 +7,14 @@ rust-version = "1.70"
 authors = ["Huang-Huang Bao <i@eh5.me>"]
 license = "MIT"
 
+[profile.dev]
+panic = "abort"
+
 [profile.release]
 strip = true
 lto = true
 codegen-units = 1
+panic = "abort"
 
 [patch.crates-io]
 uefi = { git = "https://github.com/rust-osdev/uefi-rs.git" }

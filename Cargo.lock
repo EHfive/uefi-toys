@@ -203,7 +203,7 @@ dependencies = [
  "uefi-loopdrv",
  "uefi-raw",
  "uefi-services",
- "winsplit",
+ "uefi-shell-split",
 ]
 
 [[package]]
@@ -238,6 +238,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "uefi-shell-split"
+version = "0.1.0"
+dependencies = [
+ "uefi",
+]
+
+[[package]]
 name = "uguid"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -248,9 +255,3 @@ name = "unicode-ident"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "301abaae475aa91687eb82514b328ab47a211a533026cb25fc3e519b86adfc3c"
-
-[[package]]
-name = "winsplit"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ab703352da6a72f35c39a533526393725640575bb211f61987a2748323ad956"

@@ -88,7 +88,7 @@ enum Command<'a> {
 fn parse_args<'a, I: Iterator<Item = &'a str>>(
     mut argv_iter: I,
 ) -> Result<Command<'a>, ArgsError<'a>> {
-    let Some(name) =  argv_iter.next() else {
+    let Some(name) = argv_iter.next() else {
         return Err(ArgsError::Invalid);
     };
     let mut opts = Options::new(argv_iter);
@@ -232,14 +232,10 @@ fn main(_handle: Handle, mut system_table: SystemTable<Boot>) -> Status {
         .open_protocol_exclusive::<LoadedImage>(bt.image_handle())
         .unwrap();
 
-    let load_options = image.load_options_as_cstr16().unwrap();
-    let mut load_options_str = String::new();
-    load_options_str.reserve(load_options.num_chars());
-    load_options.as_str_in_buf(&mut load_options_str).unwrap();
-
-    let sh_params = bt
+    let mut sh_params = bt
         .open_protocol_exclusive::<ShellParameters>(bt.image_handle())
         .ok();
+    sh_params.take();
     let argv: Vec<String> = if let Some(sh_params) = sh_params {
         sh_params
             .args()
@@ -250,8 +246,11 @@ fn main(_handle: Handle, mut system_table: SystemTable<Boot>) -> Status {
             })
             .collect()
     } else {
-        // FIXME: use a UEFI-split
-        winsplit::split(&load_options_str)
+        let load_options = image.load_options_as_cstr16().unwrap();
+        let mut load_options_str = String::new();
+        load_options_str.reserve(load_options.num_chars());
+        load_options.as_str_in_buf(&mut load_options_str).unwrap();
+        uefi_shell_split::split(load_options_str.as_str())
     };
     if argv.is_empty() {
         log::error!("Command-line options not passed");
