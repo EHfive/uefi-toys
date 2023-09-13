@@ -121,10 +121,11 @@ unsafe extern "efiapi" fn remove(this: *mut LoopControlProtocol, loop_handle: Ra
         .loop_list
         .iter()
         .enumerate()
-        .find(|(_, (_, h, _))| (*h == loop_handle)) else {
-            log::error!("handle {:?} not found", loop_handle);
-            return Status::NOT_FOUND;
-        };
+        .find(|(_, (_, h, _))| (*h == loop_handle))
+    else {
+        log::error!("handle {:?} not found", loop_handle);
+        return Status::NOT_FOUND;
+    };
 
     match loopback::uninstall_loopback(ctx.bus_handle, loop_handle) {
         Err(e) => return e.status(),
