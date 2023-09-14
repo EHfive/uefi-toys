@@ -6,7 +6,7 @@ An UEFI application to set [OSIndications](https://uefi.org/specs/UEFI/2.10/08_S
 
 You can also set default command-line options with environment variable `UEFI_RESET_DEFAULT_CMD` at compile-time.
 
-For example, you can chainload the following efi in a UEFI boot loader to reboot system to firmware UI.
+For example, you can chainload the following efi in an UEFI boot loader to reboot system to firmware UI.
 
 ```
 export UEFI_RESET_DEFAULT_CMD="uefi-reset.efi firmware"
@@ -24,7 +24,7 @@ See [LoopControlProtocol](loopdrv/src/driver/loop_ctl.rs) and [LoopProtocol](loo
 
 An UEFI application to attach image file to loopback device with loopdrv similar to `losetup` on Linux.
 It also supports file patching for ISO96660 image,
-this can be used to append an custom initramfs hence hijacking the init process.
+this can be used to append a custom initramfs hence hijacking the init process.
 
 ### Build
 
@@ -41,9 +41,9 @@ You need to operate under UEFI shell.
 
 #### (Optional) Load filesystem drivers
 
-Load filesystem drivers from [efifs](https://github.com/pbatard/efifs) if you files are not resides in FAT partition.
+Load filesystem drivers from [efifs](https://github.com/pbatard/efifs) if your files are not resides in FAT partition.
 
-Drivers need to be copies to ESP partition or anywhere UEFI shell can read.
+Drivers need to be copies to the ESP partition or anywhere UEFI shell can read.
 
 ```
 Shell> FS0:
@@ -93,7 +93,7 @@ EXAMPLE:
   * Append a cpio to initramfs file in Live CD ISO and setup loopback
   FS0:\uefi-lopatch.efi -s initramfs-linux.img -a patch-init.cpio archlinux.iso
 
-  * Attach an FAT image to a free loopback device
+  * Attach a FAT image to a free loopback device
   FS0:\uefi-lopatch.efi fat.img
 ```
 

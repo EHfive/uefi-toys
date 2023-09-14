@@ -50,7 +50,7 @@ EXAMPLE:
   * Append a cpio to initramfs file in Live CD ISO and setup loopback
   {name} -r -s initramfs-linux.img -a patch-init.cpio archlinux.iso
 
-  * Attach an FAT image to a free loopback device
+  * Attach a FAT image to a free loopback device
   {name} fat.img
 ",
             name = $name
