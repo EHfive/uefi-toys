@@ -237,10 +237,7 @@ dependencies = [
  "bytemuck",
  "getargs",
  "log",
- "memchr",
- "r-efi",
  "uefi",
- "uefi-raw",
  "uefi-services",
  "uefi-shell-split",
 ]

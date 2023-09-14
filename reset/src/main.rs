@@ -5,10 +5,10 @@ extern crate alloc;
 
 use alloc::string::String;
 use alloc::vec::Vec;
+use core::option_env;
 
 use bitflags::{bitflags, Flags};
 use bytemuck::{Pod, Zeroable};
-use core::option_env;
 use getargs::{Arg, Options};
 use uefi::prelude::*;
 use uefi::proto::loaded_image::LoadedImage;
