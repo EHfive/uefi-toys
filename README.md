@@ -1,5 +1,18 @@
 # UEFI Toys
 
+## reset
+
+An UEFI application to set [OSIndications](https://uefi.org/specs/UEFI/2.10/08_Services_Runtime_Services.html#exchanging-information-between-the-os-and-firmware) flags and reset system.
+
+You can also set default command-line options with environment variable `UEFI_RESET_DEFAULT_CMD` at compile-time.
+
+For example, you can chainload the following efi in a UEFI boot loader to reboot system to firmware UI.
+
+```
+export UEFI_RESET_DEFAULT_CMD="uefi-reset.efi firmware"
+cargo build --package uefi-reset
+```
+
 ## loopdrv
 
 An UEFI loopback service driver similar to loop driver on Linux.

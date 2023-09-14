@@ -1,0 +1,27 @@
+[package]
+name = "uefi-reset"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bitflags = { version = "2.4.0", features = ["bytemuck"] }
+bytemuck = { version = "1.14.0", features = ["derive"] }
+getargs = { version = "0.5.0", default-features = false }
+log = "0.4.20"
+memchr = { version = "2.6.3", default-features = false, features = ["alloc"] }
+r-efi = "4.2.0"
+uefi = { version = "0.24.0", features = ["alloc"] }
+uefi-raw = "0.3.0"
+uefi-services = { version = "0.21.0" }
+uefi-shell-split = { version = "0.1.0", path = "../shell-split", features = [
+    "alloc",
+] }
+
+[features]
+qemu = ["uefi-services/qemu"]
