@@ -21,11 +21,13 @@ pub mod prelude {
 }
 
 pub trait Indexable:
-    Index<Range<usize>, Output = Self::IndexOut> + Index<RangeFrom<usize>, Output = Self::IndexOut>
+    Index<Range<Self::Idx>, Output = Self::IndexOut>
+    + Index<RangeFrom<Self::Idx>, Output = Self::IndexOut>
 {
+    type Idx: Eq + Copy;
     type IndexOut: ?Sized;
     type Item: Eq;
-    type AsIter<'a>: Iterator<Item = (usize, Self::Item)>
+    type AsIter<'a>: Iterator<Item = (Self::Idx, Self::Item)>
     where
         Self: 'a;
 
@@ -38,6 +40,7 @@ pub trait Indexable:
 }
 
 impl Indexable for str {
+    type Idx = usize;
     type IndexOut = str;
     type Item = char;
     type AsIter<'a> = core::str::CharIndices<'a>;
@@ -54,6 +57,7 @@ impl Indexable for str {
 macro_rules! impl_for_slice {
     ($Item:ty, $cvt:ident, $Back:ty) => {
         impl Indexable for [$Item] {
+            type Idx = usize;
             type IndexOut = [$Item];
             type Item = $Item;
             type AsIter<'a> = Enumerate<core::iter::Copied<core::slice::Iter<'a, $Item>>> where $Item: 'a;
@@ -98,9 +102,9 @@ pub struct Split<'a, T: Indexable + ?Sized> {
     fused: bool,
 }
 
-enum Ch<T> {
-    Found { idx: usize, ch: T },
-    NotFound(Option<usize>),
+enum Ch<Idx, T> {
+    Found { idx: Idx, ch: T },
+    NotFound(Option<Idx>),
 }
 
 impl<'a, T: Indexable + ?Sized> Split<'a, T> {
@@ -113,7 +117,7 @@ impl<'a, T: Indexable + ?Sized> Split<'a, T> {
         }
     }
 
-    fn read_ch(&mut self) -> Option<(usize, T::Item)> {
+    fn read_ch(&mut self) -> Option<(T::Idx, T::Item)> {
         if self.fused {
             return None;
         }
@@ -140,7 +144,7 @@ impl<'a, T: Indexable + ?Sized> Split<'a, T> {
         }
     }
 
-    fn find_next_ch(&mut self, pat: &[T::Item]) -> Ch<T::Item> {
+    fn find_next_ch(&mut self, pat: &[T::Item]) -> Ch<T::Idx, T::Item> {
         loop {
             let Some((idx, ch)) = self.read_ch() else {
                 break;
@@ -157,7 +161,7 @@ impl<'a, T: Indexable + ?Sized> Split<'a, T> {
     }
 
     /// See <https://github.com/tianocore/edk2/blob/7f1a8cad9945674f068ff5e98a533280a7f0efb1/ShellPkg/Application/Shell/ShellParametersProtocol.c#L23-L57>
-    fn find_end_of_arg(&mut self) -> Result<Option<usize>, ()> {
+    fn find_end_of_arg(&mut self) -> Result<Option<T::Idx>, ()> {
         loop {
             let ch = self.find_next_ch(&[T::SPACE, T::QUOTE, T::NUL]);
             // ends only if reaches whitespace or end
@@ -273,26 +277,33 @@ where
     }
 
     pub fn decode(&self) -> Cow<T> {
-        let mut first = None;
-        let mut last = None;
-        let mut count = 0;
+        let mut first_idx = None;
+        let mut first_quote_and_after = None;
+        let mut last_quote = None;
         let mut to_owned = false;
-        for (_, ch) in self.raw_arg.as_iter() {
-            count += 1;
-            if last.is_some() {
-                to_owned = true;
-                break;
-            }
-            if ch == T::QUOTE {
-                if first.is_none() {
-                    first = Some(count);
-                    if count != 1 {
+        for (idx, ch) in self.raw_arg.as_iter() {
+            if let Some(quote_idx) = last_quote {
+                // invariant: quote_idx < idx
+                if let Some((first_quote, _)) = first_quote_and_after {
+                    // last quote is neither first char or last char
+                    if quote_idx != first_quote {
                         to_owned = true;
                         break;
                     }
+                // quote is the first quote but not the first char
+                } else if quote_idx != first_idx.unwrap() {
+                    to_owned = true;
+                    break;
                 } else {
-                    last = Some(count)
+                    // invariant: quote_idx + 1 == idx
+                    first_quote_and_after = Some((quote_idx, idx));
                 }
+            }
+            if first_idx.is_none() {
+                first_idx = Some(idx);
+            }
+            if ch == T::QUOTE {
+                last_quote = Some(idx);
             }
             if ch == T::CARET {
                 to_owned = true;
@@ -302,10 +313,22 @@ where
         if to_owned {
             return Cow::<T>::Owned(self.iter().collect());
         }
-        if Some(1) == first && Some(count) == last {
-            return Cow::Borrowed(&self.raw_arg[1..count - 1]);
-        }
-        Cow::Borrowed(self.raw_arg)
+        let raw_arg = if let Some(last_quote) = last_quote {
+            if let Some((first_quote, begin)) = first_quote_and_after {
+                if first_quote == last_quote {
+                    // no ending quote
+                    &self.raw_arg[begin..]
+                } else {
+                    &self.raw_arg[begin..last_quote]
+                }
+            } else {
+                // no starting quote
+                &self.raw_arg[first_idx.unwrap()..last_quote]
+            }
+        } else {
+            self.raw_arg
+        };
+        Cow::Borrowed(raw_arg)
     }
 }
 
@@ -413,6 +436,8 @@ mod tests {
             arg("a^b^\"c").decode()
         );
         assert_eq!(Cow::<str>::Borrowed("abc"), arg("\"abc\"").decode());
+        assert_eq!(Cow::<str>::Borrowed("abc"), arg("abc\"").decode());
+        assert_eq!(Cow::<str>::Borrowed("abc"), arg("\"abc").decode());
     }
 
     #[test]
