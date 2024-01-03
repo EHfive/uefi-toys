@@ -2,7 +2,7 @@
 
 ## reset
 
-An UEFI application to set [OSIndications](https://uefi.org/specs/UEFI/2.10/08_Services_Runtime_Services.html#exchanging-information-between-the-os-and-firmware) flags and reset system.
+A UEFI application to set [OSIndications](https://uefi.org/specs/UEFI/2.10/08_Services_Runtime_Services.html#exchanging-information-between-the-os-and-firmware) flags and reset system.
 
 You can also set default command-line options with environment variable `UEFI_RESET_DEFAULT_CMD` at compile-time.
 
@@ -15,14 +15,14 @@ cargo build --package uefi-reset
 
 ## loopdrv
 
-An UEFI loopback service driver similar to loop driver on Linux.
+A UEFI loopback service driver similar to loop driver on Linux.
 It additionally provides device-mapper like linear concatting interface for file patching.
 
 See [LoopControlProtocol](loopdrv/src/driver/loop_ctl.rs) and [LoopProtocol](loopdrv/src/driver/loopback/loop_pt.rs) for protocols.
 
 ## lopatch
 
-An UEFI application to attach image file to loopback device with loopdrv similar to `losetup` on Linux.
+A UEFI application to attach image file to loopback device with loopdrv similar to `losetup` on Linux.
 It also supports file patching for ISO96660 image,
 this can be used to append a custom initramfs hence hijacking the init process.
 
